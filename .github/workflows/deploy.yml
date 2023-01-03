@@ -15,3 +15,5 @@ jobs:
         run: cd hetzner && terraform init
       - name: Terraform Apply
         run: cd hetzner && terraform apply
+    env:
+      TF_VAR_HCLOUD_TOKEN: ${{ secrets.TF_VAR_HCLOUD_TOKEN }}
