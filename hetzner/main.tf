@@ -6,4 +6,11 @@ terraform {
       version = "~> 1.24.1"
     }
   }
+  backend "s3" {
+    bucket         = "my-swarm-for-hetzner"
+    key            = "global/s3/terraform.tfstate"
+    region         = "eu-central-1"
+    dynamodb_table = "my-swarm-for-hetzner"
+    encrypt        = true
+  }
 }
