@@ -12,6 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Terraform Init
-        run: terraform init
+        run: cd hetzner && terraform init
       - name: Terraform Apply
-        run: terraform apply
+        run: cd hetzner && terraform apply
