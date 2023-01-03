@@ -16,4 +16,4 @@ jobs:
       - name: Terraform Apply
         env:
           TF_VAR_HCLOUD_TOKEN: ${{ secrets.TF_VAR_HCLOUD_TOKEN }}
-        run: cd hetzner && terraform apply
+        run: cd hetzner && terraform apply -auto-approve
