@@ -9,6 +9,11 @@ jobs:
     name: Deploy to Hetzner
     runs-on: ubuntu-latest
     steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Terraform Init
@@ -26,7 +31,7 @@ jobs:
         env:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        run: mkdir $HOME/.ssh && touch $HOME/.ssh/known_hosts && cd hetzner && ./terraform-swarm-inventory.py --accept
+        run: cd hetzner && ./terraform-swarm-inventory.py --accept
 
       - name: Run ansible and setup docker
         env:
