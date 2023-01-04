@@ -1,0 +1,19 @@
+---
+- hosts: swarm-manager
+  remote_user: root
+  tasks:
+    - name: init swarm on master
+      docker_swarm:
+        state: present
+        advertise_addr: "ens10"
+      register: swarm_init_result
+
+- hosts: swarm-workers, swarm-database
+  remote_user: root
+  tasks:
+    - name: add workers to swarm
+      docker_swarm:
+        state: join
+        advertise_addr: "ens10"
+        remote_addrs: [ "10.0.0.2" ]
+        join_token: "{{hostvars['swarm-manager'].swarm_init_result.swarm_facts.JoinTokens.Worker}}"
