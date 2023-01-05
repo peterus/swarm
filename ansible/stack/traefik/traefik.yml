@@ -14,8 +14,6 @@ entryPoints:
           to: https
           scheme: https
           permanent: true
-  ssh:
-    address: :22
 certificatesResolvers:
   le:
     acme:
