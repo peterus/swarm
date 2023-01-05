@@ -17,3 +17,37 @@
         advertise_addr: "ens10"
         remote_addrs: [ "10.0.0.2" ]
         join_token: "{{hostvars['swarm-manager'].swarm_init_result.swarm_facts.JoinTokens.Worker}}"
+
+- hosts: swarm-manager
+  remote_user: root
+  tasks:
+    - name: Set manager labels
+      docker_node:
+        hostname: swarm-manager
+        labels:
+          swarm_node: manager
+        labels_state: replace
+    - name: Set database labels
+      docker_node:
+        hostname: swarm-database
+        labels:
+          swarm_node: database
+        labels_state: replace
+    - name: Set worker-0 labels
+      docker_node:
+        hostname: swarm-worker-0
+        labels:
+          swarm_node: worker
+        labels_state: replace
+    - name: Set worker-1 labels
+      docker_node:
+        hostname: swarm-worker-1
+        labels:
+          swarm_node: worker
+        labels_state: replace
+    - name: Set worker-2 labels
+      docker_node:
+        hostname: swarm-worker-2
+        labels:
+          swarm_node: worker
+        labels_state: replace

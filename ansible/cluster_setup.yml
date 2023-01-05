@@ -34,6 +34,6 @@
     - name: enable hetzner volume plugin
       shell: "docker plugin enable hetzner"
       when: hetzner_volume_plugin_unconfigured.stdout == "1"
-    - name: install docker python module
+    - name: install docker and jsondiff python module
       pip:
-        name: docker
+        name: docker, jsondiff
