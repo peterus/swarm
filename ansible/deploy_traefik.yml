@@ -1,0 +1,31 @@
+---
+- hosts: swarm-manager
+  remote_user: root
+  tasks:
+    - name: Copy stack file
+      template:
+        src: stack/stack_traefik.yml
+        dest: /opt/traefik.yml
+        mode: 0444
+      vars:
+        HASHED_PASSWORD: "{{ lookup('env', 'HASHED_PASSWORD') }}"
+        EXTERNAL_IP: "{{ lookup('env', 'EXTERNAL_IP') }}"
+      register: stack_file
+
+    - name: Copy config file
+      copy:
+        src: stack/traefik
+        dest: /etc/
+        owner: root
+        group: root
+        mode: '0644'
+      register: config_file
+
+    - name: Deploy stack
+      docker_stack:
+        name: traefik
+        prune: yes
+        compose:
+          - /opt/traefik.yml
+      run_once: yes
+      when: stack_file.changed
