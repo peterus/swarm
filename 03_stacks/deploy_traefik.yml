@@ -4,7 +4,7 @@
   tasks:
     - name: Copy stack file
       template:
-        src: stack/stack_traefik.yml
+        src: stacks/traefik.yml
         dest: /opt/traefik.yml
         mode: 0444
       vars:
@@ -14,7 +14,7 @@
 
     - name: Copy config file
       copy:
-        src: stack/traefik
+        src: config/traefik
         dest: /etc/
         owner: root
         group: root
@@ -28,4 +28,4 @@
         compose:
           - /opt/traefik.yml
       run_once: yes
-      when: stack_file.changed
+      when: stack_file.changed or config_file.changed
