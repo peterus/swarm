@@ -35,4 +35,4 @@ networks:
 
 volumes:
   certificates:
-#    driver: hetzner
+    driver: hetzner
