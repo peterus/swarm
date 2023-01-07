@@ -10,7 +10,7 @@
       vars:
         HASHED_PASSWORD: "{{ lookup('env', 'HASHED_PASSWORD') }}"
         EXTERNAL_IP: "{{ lookup('env', 'EXTERNAL_IP') }}"
-      register: stack_file
+      register: traefic_stack_file
 
     - name: Copy config file
       copy:
@@ -19,7 +19,7 @@
         owner: root
         group: root
         mode: '0644'
-      register: config_file
+      register: traefic_config_file
 
     - name: Deploy stack
       docker_stack:
@@ -28,4 +28,20 @@
         compose:
           - /opt/traefik.yml
       run_once: yes
-      when: stack_file.changed or config_file.changed
+      when: traefic_stack_file.changed or traefic_config_file.changed
+
+    - name: Copy stack file
+      template:
+        src: stacks/registry.yml
+        dest: /opt/registry.yml
+        mode: 0444
+      register: registry_stack_file
+
+    - name: Deploy stack
+      docker_stack:
+        name: registry
+        prune: yes
+        compose:
+          - /opt/registry.yml
+      run_once: yes
+      when: registry_stack_file.changed
