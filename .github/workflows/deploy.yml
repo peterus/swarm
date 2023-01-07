@@ -86,3 +86,6 @@ jobs:
           EXTERNAL_IP: ${{ secrets.EXTERNAL_IP }}
           HASHED_PASSWORD: ${{ secrets.HASHED_PASSWORD }}
         run: cd 03_stacks && ansible-playbook -i ../01_hetzner/terraform-swarm-inventory.py deploy_basics.yml
+      - name: Deploy trackdirect
+        env:
+        run: cd 03_stacks && ansible-playbook -i ../01_hetzner/terraform-swarm-inventory.py deploy_trackdirect.yml

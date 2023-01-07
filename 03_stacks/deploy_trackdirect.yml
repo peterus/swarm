@@ -1,0 +1,38 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+    - name: Copy aprsc config file
+      copy:
+        src: config/aprsc_aprs.conf
+        dest: /opt/trackdirect/aprsc_aprs.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy trackdirect config file
+      copy:
+        src: config/trackdirect.ini
+        dest: /opt/trackdirect/trackdirect.ini
+        owner: root
+        group: root
+        mode: '0644'
+
+- hosts: swarm-manager
+  remote_user: root
+  tasks:
+    - name: Copy stack file
+      copy:
+        src: stacks/trackdirect.yml
+        dest: /opt/trackdirect.yml
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy stack
+      docker_stack:
+        name: trackdirect
+        prune: yes
+        compose:
+          - /opt/trackdirect.yml
+      run_once: yes
