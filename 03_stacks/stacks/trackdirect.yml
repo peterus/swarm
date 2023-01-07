@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   aprsc:
-    image: registry.test.aprs-map.info/aprsc:latest
+    image: peterus/aprsc:latest
     volumes:
       - /opt/trackdirect/aprsc_aprs.conf:/opt/aprsc/etc/aprsc.conf
     networks:
@@ -19,7 +19,7 @@ services:
           - node.labels.swarm_node == worker
 
   collector:
-    image: registry.test.aprs-map.info/trackdirect-python:latest
+    image: peterus/trackdirect-python:latest
     volumes:
       - /opt/trackdirect/trackdirect.ini:/root/trackdirect/config/trackdirect.ini
     command: /root/trackdirect/server/scripts/collector.sh trackdirect.ini 0
@@ -31,7 +31,7 @@ services:
           - node.labels.swarm_node == worker
 
   websocket:
-    image: registry.test.aprs-map.info/trackdirect-python:latest
+    image: peterus/trackdirect-python:latest
     volumes:
       - /opt/trackdirect/trackdirect.ini:/root/trackdirect/config/trackdirect.ini
     command: /root/trackdirect/server/scripts/wsserver.sh trackdirect.ini
@@ -49,7 +49,7 @@ services:
           - node.labels.swarm_node == worker
 
   web:
-    image: registry.test.aprs-map.info/trackdirect-apache:latest
+    image: peterus/trackdirect-apache:latest
     volumes:
       - /opt/trackdirect/trackdirect.ini:/root/trackdirect/config/trackdirect.ini
     networks:
@@ -66,7 +66,7 @@ services:
           - node.labels.swarm_node == worker
 
   db:
-    image: registry.test.aprs-map.info/db:latest
+    image: peterus/trackdirect-db:latest
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: foobar
@@ -79,7 +79,7 @@ services:
           - node.labels.swarm_node == worker
 
   remover:
-    image: registry.test.aprs-map.info/trackdirect-python:latest
+    image: peterus/trackdirect-python:latest
     volumes:
       - /opt/trackdirect/trackdirect.ini:/root/trackdirect/config/trackdirect.ini
     command: /root/trackdirect/server/scripts/remover.sh trackdirect.ini
