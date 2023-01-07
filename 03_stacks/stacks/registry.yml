@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  app:
+    image: registry:2
+    environment:
+      REGISTRY_STORAGE_DELETE_ENABLED: 'true'
+    volumes:
+      - registry:/var/lib/registry
+    networks:
+      traefik_public:
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.registry.entrypoints=https
+        - traefik.http.routers.registry.middlewares=admin-auth
+        - traefik.http.services.registry.loadbalancer.server.port=5000
+        - traefik.http.routers.registry.rule=Host(`registry.test.aprs-map.info`) && PathPrefix(`/v2`)
+      placement:
+        constraints:
+          - node.labels.swarm_node == manager
+
+  ui:
+    image: joxit/docker-registry-ui
+    environment:
+      DELETE_IMAGES: 'true'
+      SINGLE_REGISTRY: 'true'
+    networks:
+      traefik_public:
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.registryui.entrypoints=https
+        - traefik.http.routers.registryui.middlewares=admin-auth
+        - traefik.http.services.registryui.loadbalancer.server.port=80
+        - traefik.http.routers.registryui.rule=Host(`registry.test.aprs-map.info`)
+      placement:
+        constraints:
+          - node.labels.swarm_node == manager
+
+networks:
+  traefik_public:
+    external: true
+
+volumes:
+  registry:
+    driver: hetzner
