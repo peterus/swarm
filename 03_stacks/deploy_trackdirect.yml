@@ -2,18 +2,10 @@
 - hosts: all
   remote_user: root
   tasks:
-    - name: Copy aprsc config file
+    - name: Copy config file
       copy:
-        src: config/aprsc_aprs.conf
-        dest: /opt/trackdirect/aprsc_aprs.conf
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Copy trackdirect config file
-      copy:
-        src: config/trackdirect.ini
-        dest: /opt/trackdirect/trackdirect.ini
+        src: config/trackdirect
+        dest: /opt/
         owner: root
         group: root
         mode: '0644'
