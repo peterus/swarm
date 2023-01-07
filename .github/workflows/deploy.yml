@@ -87,4 +87,7 @@ jobs:
           HASHED_PASSWORD: ${{ secrets.HASHED_PASSWORD }}
         run: cd 03_stacks && ansible-playbook -i ../01_hetzner/terraform-swarm-inventory.py deploy_basics.yml
       - name: Deploy trackdirect
+        env:
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         run: cd 03_stacks && ansible-playbook -i ../01_hetzner/terraform-swarm-inventory.py deploy_trackdirect.yml
