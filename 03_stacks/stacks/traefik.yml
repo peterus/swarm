@@ -32,6 +32,10 @@ services:
 
 networks:
   public:
+    driver: overlay
+    attachable: true
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
 
 volumes:
   certificates:
