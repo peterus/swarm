@@ -3,7 +3,11 @@ terraform {
   required_providers {
     hcloud = {
       source  = "hetznercloud/hcloud"
-      version = "~> 1.24.1"
+      version = "1.36.2"
+    }
+    hetznerdns = {
+      source = "timohirt/hetznerdns"
+      version = "2.2.0"
     }
   }
   backend "s3" {

@@ -15,7 +15,7 @@
       docker_swarm:
         state: join
         advertise_addr: "ens10"
-        remote_addrs: [ "10.0.0.2" ]
+        remote_addrs: [ "192.168.0.2" ]
         join_token: "{{hostvars['swarm-manager'].swarm_init_result.swarm_facts.JoinTokens.Worker}}"
 
 - hosts: swarm-manager
@@ -26,12 +26,6 @@
         hostname: swarm-manager
         labels:
           swarm_node: manager
-        labels_state: replace
-    - name: Set database labels
-      docker_node:
-        hostname: swarm-database
-        labels:
-          swarm_node: database
         labels_state: replace
     - name: Set worker-0 labels
       docker_node:

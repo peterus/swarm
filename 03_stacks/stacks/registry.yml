@@ -18,7 +18,7 @@ services:
         - traefik.http.routers.registry.rule=Host(`registry.test.aprs-map.info`) && PathPrefix(`/v2`)
       placement:
         constraints:
-          - node.labels.swarm_node == manager
+          - node.role==manager
 
   ui:
     image: joxit/docker-registry-ui
@@ -36,7 +36,7 @@ services:
         - traefik.http.routers.registryui.rule=Host(`registry.test.aprs-map.info`)
       placement:
         constraints:
-          - node.labels.swarm_node == manager
+          - node.role==manager
 
 networks:
   traefik_public:

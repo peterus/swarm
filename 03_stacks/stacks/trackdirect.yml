@@ -5,18 +5,23 @@ services:
     image: peterus/aprsc:latest
     volumes:
       - /opt/trackdirect/aprsc_aprs.conf:/opt/aprsc/etc/aprsc.conf
+    ports:
+      - "10152:10152"
+      - "14580:14580"
+      - "10155:10155"
+      - "14501:14501"
     networks:
-      - private
       - traefik_public
+      - private
     deploy:
       labels:
         - traefik.enable=true
-        - traefik.http.routers.aprsc.rule=Host(`aprs-is.test.aprs-map.info`)
         - traefik.http.routers.aprsc.entrypoints=https
         - traefik.http.services.aprsc.loadbalancer.server.port=14501
+        - traefik.http.routers.aprsc.rule=Host(`aprsc.test.aprs-map.info`)
       placement:
         constraints:
-          - node.labels.swarm_node == worker
+          - node.role==worker
 
   collector:
     image: peterus/trackdirect-python:latest
@@ -28,7 +33,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.swarm_node == worker
+          - node.role==worker
 
   websocket:
     image: peterus/trackdirect-python:latest
@@ -46,7 +51,7 @@ services:
         - traefik.http.services.websocket.loadbalancer.server.port=9000
       placement:
         constraints:
-          - node.labels.swarm_node == worker
+          - node.role==worker
 
   web:
     image: peterus/trackdirect-apache:latest
@@ -63,7 +68,7 @@ services:
         - traefik.http.services.aprs_map.loadbalancer.server.port=80
       placement:
         constraints:
-          - node.labels.swarm_node == worker
+          - node.role==worker
 
   db:
     image: peterus/trackdirect-db:latest
@@ -73,35 +78,40 @@ services:
       POSTGRES_DB: trackdirect
     volumes:
       - db:/var/lib/postgresql/data
+    networks:
+      - private
     deploy:
       placement:
         constraints:
-          - node.labels.swarm_node == worker
+          - node.role==worker
 
-  remover:
-    image: peterus/trackdirect-python:latest
-    volumes:
-      - /opt/trackdirect/trackdirect.ini:/root/trackdirect/config/trackdirect.ini
-    command: /root/trackdirect/server/scripts/remover.sh trackdirect.ini
-    deploy:
-      labels:
-        - swarm.cronjob.enable=true
-        - swarm.cronjob.schedule=5 * * * *
-        - swarm.cronjob.skip-running=true
-      replicas: 0
-      restart_policy:
-        condition: none
-      placement:
-        constraints:
-          - node.labels.swarm_node == worker
-
+#  remover:
+#    image: peterus/trackdirect-python:latest
+#    volumes:
+#      - /opt/trackdirect/trackdirect.ini:/root/trackdirect/config/trackdirect.ini
+#    command: /root/trackdirect/server/scripts/remover.sh trackdirect.ini
+#    networks:
+#      - private
+#    deploy:
+#      labels:
+#        - swarm.cronjob.enable=true
+#        - swarm.cronjob.schedule=5 * * * *
+#        - swarm.cronjob.skip-running=true
+#      replicas: 0
+#      restart_policy:
+#        condition: none
+#      placement:
+#        constraints:
+#          - node.role==worker
 
 networks:
-  private:
   traefik_public:
     external: true
-
+  private:
 
 volumes:
   db:
     driver: hetzner
+    driver_opts:
+      size: '50'
+      fstype: xfs

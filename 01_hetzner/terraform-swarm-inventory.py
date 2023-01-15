@@ -32,30 +32,27 @@ def main():
     args = get_args()
     wd_to_script_dir()
     manager = terraform_output('swarm-manager')
-    database = terraform_output('swarm-database')
     workers = terraform_output('swarm-workers')
     ssh_public_key = terraform_output('ssh-public-key')
     if args.flatlist:
         hosts = list(manager.keys())
-        hosts.extend(list(database.keys()))
         hosts.extend(list(workers.keys()))
         print('\n'.join(hosts))
     if args.list:
         inventory = {
             'swarm-manager': list(manager.keys()),
-            'swarm-database': list(database.keys()),
             'swarm-workers': list(workers.keys())
         }
         print(json.dumps(inventory))
     if args.host:
-        hosts = {**manager, **database, **workers}
+        hosts = {**manager, **workers}
         print(json.dumps({
             'ansible_host': hosts[args.host],
             'ansible_port': ANSIBLE_SSH_PORT,
             'ssh_public_key': ssh_public_key
         }))
     if args.accept:
-        hosts = {**manager, **database, **workers}
+        hosts = {**manager, **workers}
         for host in hosts:
             ip = hosts[host]
             os.system('ssh-keygen -R %s' % ip)
